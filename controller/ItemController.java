@@ -9,6 +9,7 @@ package icet.thogaKade.controller;
 import icet.thogaKade.db.DBConnection;
 import icet.thogaKade.model.Customer;
 import icet.thogaKade.model.Item;
+import icet.thogaKade.model.OrderDetails;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -76,4 +77,23 @@ public class ItemController {
          }
          return codeSet;
     }
+    public static boolean updateStock(ArrayList<OrderDetails> orderDetailsList) throws ClassNotFoundException, SQLException {
+         for (OrderDetails orderDetails : orderDetailsList) {
+            if(!updateStock(orderDetails)){
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public static boolean updateStock(OrderDetails orderDetails) throws ClassNotFoundException, SQLException {
+         Connection connection = DBConnection.getInstance().getConnection();
+         PreparedStatement pstm = connection.prepareStatement("Update item set qtyOnHand=qtyOnHand-? where code=?");
+         pstm.setObject(1,orderDetails.getQty());
+         pstm.setObject(2,orderDetails.getItemCode());
+         return pstm.executeUpdate()>0;
+    }
+    
+    
+    
 }

@@ -38,7 +38,13 @@ public class OrderController {
         boolean orderIsAdded = pstm.executeUpdate()>0;
         
         if(orderIsAdded){
-        boolean oderDetailsIsAdded = OrderDetailsController.addOrderDetails(order.getOrderDetailList());
+            boolean oderDetailsIsAdded = OrderDetailsController.addOrderDetails(order.getOrderDetailList());
+            if(oderDetailsIsAdded){
+                boolean itemIsUpdate=ItemController.updateStock(order.getOrderDetailList());
+                if(itemIsUpdate){
+                    return true;
+                }
+            }
         }
         return false;
     }
